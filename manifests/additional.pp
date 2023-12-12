@@ -16,7 +16,7 @@
 class php::additional (
   Optional[String] $version = undef,
   Hash $extensions          = $php::extensions,
-  Hash $fpm                 = $php::fpm,
+  Boolean $fpm              = $php::fpm,
 ) {
   if $version == undef or $version == '' {
     fail("php::additiona::${title} is missing the required field \"version\"")
@@ -39,12 +39,14 @@ class php::additional (
     package_prefix         => "php${version}-",
   })
 
-  Anchor['php::begin']
-  -> class { 'php::fpm':
-    inifile      => "${base_path}/php.ini",
-    package      => "php${version}-php-fpm",
-    service_name => "php${version}-php-fpm",
-    config_file  => "${base_path}/php-fpm.ini",
+  if $fpm {
+    Anchor['php::begin']
+    -> class { 'php::fpm':
+      inifile      => "${base_path}/php.ini",
+      package      => "php${version}-php-fpm",
+      service_name => "php${version}-php-fpm",
+      config_file  => "${base_path}/php-fpm.ini",
+    }
+    -> Anchor['php::end']
   }
-  -> Anchor['php::end']
 }
