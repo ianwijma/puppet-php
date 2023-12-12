@@ -110,6 +110,12 @@
 # [*pear_ensure*]
 #   The package ensure of PHP pear to install and run pear auto_discover
 #
+# [*install_additional_versions*]
+#   If we want to install additional php versions
+#
+# [*additional_versions*]
+#   The package ensure of PHP pear to install and run pear auto_discover
+#
 # [*settings*]
 #
 class php (
@@ -145,6 +151,8 @@ class php (
   Boolean $ext_tool_enabled                       = $php::params::ext_tool_enabled,
   String $log_owner                               = $php::params::fpm_user,
   String $log_group                               = $php::params::fpm_group,
+  Boolean $install_additional_versions            = false,
+  Hash $additional_versions                       = {},
 ) inherits php::params {
 
   $real_fpm_package = pick($fpm_package, "${package_prefix}${::php::params::fpm_package_suffix}")
@@ -234,5 +242,14 @@ class php (
       ensure  => absent,
       require => Class['php::packages'],
     }
+  }
+
+  # Install additional PHP versions
+  if $install_additional_versions {
+    if $facts['os']['family'] != 'RedHat' or $php::globals::rhscl_mode != 'remi' {
+      fail('Currently RedHat with remi is required to install additional php versions')
+    }
+
+    create_resources('php::additional', $additional_versions)
   }
 }

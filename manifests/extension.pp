@@ -66,6 +66,10 @@
 # [*install_options*]
 #   Array of String or Hash options to pass to the provider.
 #
+# [*config_root_ini*]
+#   Optional absolut path to overwrite the config root init.
+#   Defaults to undef.
+#
 define php::extension (
   String           $ensure                          = 'installed',
   Optional[Php::Provider] $provider                 = undef,
@@ -83,6 +87,7 @@ define php::extension (
   Variant[String, Array[String]] $header_packages   = [],
   Variant[String, Array[String]] $compiler_packages = $php::params::compiler_packages,
   Php::InstallOptions $install_options              = undef,
+  Optional[Stdlib::Absolutepath] $config_root_ini   = undef,
 ) {
 
   if ! defined(Class['php']) {
@@ -90,14 +95,14 @@ define php::extension (
   }
 
   php::extension::install { $title:
-    ensure            => $ensure,
-    provider          => $provider,
-    source            => $source,
-    responsefile      => $responsefile,
-    package_prefix    => $package_prefix,
-    header_packages   => $header_packages,
-    compiler_packages => $compiler_packages,
-    install_options   => $install_options,
+    ensure                 => $ensure,
+    provider               => $provider,
+    source                 => $source,
+    responsefile           => $responsefile,
+    package_prefix         => $package_prefix,
+    header_packages        => $header_packages,
+    compiler_packages      => $compiler_packages,
+    install_options        => $install_options,
   }
 
   # PEAR packages don't require any further configuration, they just need to "be there".
@@ -114,16 +119,17 @@ define php::extension (
       }
 
       php::extension::config { $settings_name:
-        ensure          => $ensure,
-        provider        => $provider,
-        so_name         => $so_name,
-        ini_prefix      => $ini_prefix,
-        php_api_version => $php_api_version,
-        zend            => $zend,
-        settings        => $settings_hash,
-        settings_prefix => $settings_prefix,
-        sapi            => $sapi,
-        subscribe       => Php::Extension::Install[$title],
+        ensure                 => $ensure,
+        provider               => $provider,
+        so_name                => $so_name,
+        ini_prefix             => $ini_prefix,
+        php_api_version        => $php_api_version,
+        zend                   => $zend,
+        settings               => $settings_hash,
+        settings_prefix        => $settings_prefix,
+        sapi                   => $sapi,
+        subscribe              => Php::Extension::Install[$title],
+        config_root_ini        => $config_root_ini,
       }
     }
   }

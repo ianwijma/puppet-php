@@ -44,16 +44,21 @@
 #   String parameter, whether to specify ALL sapi or a specific sapi.
 #   Defaults to ALL.
 #
+# [*config_root_ini*]
+#   Optional absolut path to overwrite the config root init.
+#   Defaults to undef.
+#
 define php::extension::config (
-  String                   $ensure          = 'installed',
-  Optional[Php::Provider]  $provider        = undef,
-  Optional[String]         $so_name         = downcase($name),
-  Optional[String]         $ini_prefix      = undef,
-  Optional[String]         $php_api_version = undef,
-  Boolean                  $zend            = false,
-  Hash                     $settings        = {},
-  Variant[Boolean, String] $settings_prefix = false,
-  Php::Sapi                $sapi            = 'ALL',
+  String                         $ensure           = 'installed',
+  Optional[Php::Provider]        $provider         = undef,
+  Optional[String]               $so_name          = downcase($name),
+  Optional[String]               $ini_prefix       = undef,
+  Optional[String]               $php_api_version  = undef,
+  Boolean                        $zend             = false,
+  Hash                           $settings         = {},
+  Variant[Boolean, String]       $settings_prefix  = false,
+  Php::Sapi                      $sapi             = 'ALL',
+  Optional[Stdlib::Absolutepath] $config_root_ini  = undef
 ) {
 
   if ! defined(Class['php']) {
@@ -82,9 +87,9 @@ define php::extension::config (
     $final_settings = $full_settings
   }
 
-  $config_root_ini = pick_default($php::config_root_ini, $php::params::config_root_ini)
+  $final_config_root_ini = pick_default($config_root_ini, $php::config_root_ini, $php::params::config_root_ini)
   ::php::config { $title:
-    file   => "${config_root_ini}/${ini_prefix}${ini_name}.ini",
+    file   => "${final_config_root_ini}/${ini_prefix}${ini_name}.ini",
     config => $final_settings,
   }
 

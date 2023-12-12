@@ -23,6 +23,10 @@
 #   OS default service provider used to start FPM.
 #   Defaults to 'undef', pick system defaults.
 #
+# [*config_file*]
+#   Used to overwrite the fpm config file.
+#   Defaults to $php::params::fpm_config_file.
+#
 # [*pools*]
 #   Hash of php::fpm::pool resources that will be created. Defaults
 #   to a single php::fpm::pool named www with default parameters.
@@ -57,6 +61,7 @@ class php::fpm (
   $service_enable               = $php::fpm_service_enable,
   $service_name                 = $php::fpm_service_name,
   $service_provider             = $php::fpm_service_provider,
+  $config_file                  = $php::params::fpm_config_file,
   String $package               = $php::real_fpm_package,
   Stdlib::Absolutepath $inifile = $php::fpm_inifile,
   Hash $settings                = $php::real_settings,
@@ -85,13 +90,14 @@ class php::fpm (
   }
 
   class { 'php::fpm::config':
-    user      => $user,
-    group     => $group,
-    inifile   => $inifile,
-    settings  => $real_settings,
-    log_owner => $log_owner,
-    log_group => $log_group,
-    require   => Package[$real_package],
+    config_file => $config_file,
+    user        => $user,
+    group       => $group,
+    inifile     => $inifile,
+    settings    => $real_settings,
+    log_owner   => $log_owner,
+    log_group   => $log_group,
+    require     => Package[$real_package],
   }
 
   contain 'php::fpm::config'
