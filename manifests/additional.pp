@@ -27,7 +27,7 @@ class php::additional (
   anchor { 'additional_php::begin': }
   -> class { 'php::packages':
     names           => ["php${version}"],
-    names_to_prefix => []
+    names_to_prefix => [],
   }
   -> anchor { 'additional_php::end': }
 
@@ -36,7 +36,7 @@ class php::additional (
     config_root_ini        => "${base_path}/php.d/",
     require                => Class['php::packages'],
     before                 => Anchor['additional_php::end'],
-    package_prefix         => "php${version}-"
+    package_prefix         => "php${version}-",
   })
 
   Anchor['php::begin']
@@ -44,7 +44,7 @@ class php::additional (
     inifile      => "${base_path}/php.ini",
     package      => "php${version}-php-fpm",
     service_name => "php${version}-php-fpm",
-    config_file  => "${base_path}/php-fpm.ini"
+    config_file  => "${base_path}/php-fpm.ini",
   }
   -> Anchor['php::end']
 }

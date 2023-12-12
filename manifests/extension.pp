@@ -90,19 +90,19 @@ define php::extension (
   Optional[Stdlib::Absolutepath] $config_root_ini   = undef,
 ) {
 
-  if ! defined(Class['php']) {
+  if !defined(Class['php']) {
     warning('php::extension is private')
   }
 
   php::extension::install { $title:
-    ensure                 => $ensure,
-    provider               => $provider,
-    source                 => $source,
-    responsefile           => $responsefile,
-    package_prefix         => $package_prefix,
-    header_packages        => $header_packages,
-    compiler_packages      => $compiler_packages,
-    install_options        => $install_options,
+    ensure            => $ensure,
+    provider          => $provider,
+    source            => $source,
+    responsefile      => $responsefile,
+    package_prefix    => $package_prefix,
+    header_packages   => $header_packages,
+    compiler_packages => $compiler_packages,
+    install_options   => $install_options,
   }
 
   # PEAR packages don't require any further configuration, they just need to "be there".
@@ -119,17 +119,17 @@ define php::extension (
       }
 
       php::extension::config { $settings_name:
-        ensure                 => $ensure,
-        provider               => $provider,
-        so_name                => $so_name,
-        ini_prefix             => $ini_prefix,
-        php_api_version        => $php_api_version,
-        zend                   => $zend,
-        settings               => $settings_hash,
-        settings_prefix        => $settings_prefix,
-        sapi                   => $sapi,
-        subscribe              => Php::Extension::Install[$title],
-        config_root_ini        => $config_root_ini,
+        ensure          => $ensure,
+        provider        => $provider,
+        so_name         => $so_name,
+        ini_prefix      => $ini_prefix,
+        php_api_version => $php_api_version,
+        zend            => $zend,
+        settings        => $settings_hash,
+        settings_prefix => $settings_prefix,
+        sapi            => $sapi,
+        subscribe       => Php::Extension::Install[$title],
+        config_root_ini => $config_root_ini,
       }
     }
   }
