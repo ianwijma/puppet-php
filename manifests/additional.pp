@@ -40,13 +40,30 @@ class php::additional (
   })
 
   if $fpm {
-    Anchor['php::begin']
+    Anchor['additional_php::begin']
     -> class { 'php::fpm':
       inifile      => "${base_path}/php.ini",
       package      => "php${version}-php-fpm",
       service_name => "php${version}-php-fpm",
       config_file  => "${base_path}/php-fpm.ini",
     }
-    -> Anchor['php::end']
+    -> Anchor['additional_php::end']
+
+    # After installing php-fpm, it uses port 9000, which conflicts with each other.
+    # So we're updating it to use a socket instead.
+    $find_replace_lines = {
+      'listen = 127.0.0.1:9000' => "listen = /run/php-fpm/php-fpm${version}.sock",
+      ';listen.owner = nobody'  => 'listen.owner = nginx',
+      ';listen.group = nobody'  => 'listen.group = nginx',
+      ';listen.mode = 0660'     => 'listen.mode = 0660',
+    }
+
+    $find_replace_lines.each |String $find, String $replace| {
+      exec { "update_${version}_fpm_config_${find}":
+        command  => "sed -i 's|${find}|${replace}|g' ${$base_path}/php-fpm.d/www.conf",
+        path     => ['/bin', '/usr/bin', '/usr/local/bin', '/usr/local/sbin'],
+        provider => 'shell',
+      }
+    }
   }
 }
