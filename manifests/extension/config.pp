@@ -58,7 +58,7 @@ define php::extension::config (
   Hash                           $settings         = {},
   Variant[Boolean, String]       $settings_prefix  = false,
   Php::Sapi                      $sapi             = 'ALL',
-  Optional[Stdlib::Absolutepath] $config_root_ini  = undef
+  Optional[Stdlib::Absolutepath] $config_root_ini  = undef,
 ) {
 
   if ! defined(Class['php']) {
