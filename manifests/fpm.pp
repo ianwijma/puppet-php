@@ -25,7 +25,7 @@
 #
 # [*config_file*]
 #   Used to overwrite the fpm config file.
-#   Defaults to $php::params::fpm_config_file.
+#   Defaults to $php::fpm_config_file.
 #
 # [*pools*]
 #   Hash of php::fpm::pool resources that will be created. Defaults
@@ -61,7 +61,7 @@ class php::fpm (
   $service_enable               = $php::fpm_service_enable,
   $service_name                 = $php::fpm_service_name,
   $service_provider             = $php::fpm_service_provider,
-  $config_file                  = $php::params::fpm_config_file,
+  $config_file                  = $php::fpm_config_file,
   String $package               = $php::real_fpm_package,
   Stdlib::Absolutepath $inifile = $php::fpm_inifile,
   Hash $settings                = $php::real_settings,

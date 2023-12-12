@@ -39,6 +39,10 @@
 # [*fpm_inifile*]
 #   Path to php.ini for fpm
 #
+# [*fpm_config_file*]
+#   Used to overwrite the fpm config file.
+#   Defaults to $php::params::fpm_config_file.
+#
 # [*fpm_package*]
 #   Name of fpm package to install
 #
@@ -129,6 +133,7 @@ class php (
   Hash $fpm_pools                                 = { 'www' => {} },
   Hash $fpm_global_pool_settings                  = {},
   $fpm_inifile                                    = $php::params::fpm_inifile,
+  $fpm_config_file                                = $php::params::fpm_config_file,
   $fpm_package                                    = undef,
   $fpm_user                                       = $php::params::fpm_user,
   $fpm_group                                      = $php::params::fpm_group,
